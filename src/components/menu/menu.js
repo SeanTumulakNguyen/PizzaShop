@@ -11,14 +11,18 @@ const MenuStyled = styled.div`
 const Menu = () => {
 	return (
 		<MenuStyled>
-			<h1>Menu</h1>
-			<FoodGrid>
-				{foods.map((f, i) => (
-					<Food img={f.img} key={i}>
-						<FoodLabel>{f.name}</FoodLabel>
-					</Food>
-				))}
-			</FoodGrid>
+			{Object.entries(foods).map(([ sectionName, foods ]) => (
+				<React.Fragment>
+					<h1>{sectionName}</h1>
+					<FoodGrid>
+						{foods.map((f, i) => (
+							<Food img={f.img} key={i}>
+								<FoodLabel>{f.name}</FoodLabel>
+							</Food>
+						))}
+					</FoodGrid>
+				</React.Fragment>
+			))}
 		</MenuStyled>
 	);
 };
