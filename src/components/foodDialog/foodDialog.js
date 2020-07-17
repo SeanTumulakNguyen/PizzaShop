@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FoodLabel } from '../menu/foodgrid';
 import { pizzaRed } from '../../styles/colors';
-import { Title } from '../../styles/title'
+import { Title } from '../../styles/title';
 
 const Dialog = styled.div`
 	width: 500px;
@@ -23,9 +23,9 @@ export const DialogContent = styled.div`
 
 export const DialogFooter = styled.div`
 	box-shadow: 0px -2px 10px 0px grey;
-    height: 60px;
-    display: flex;
-    justify-content: center;
+	height: 60px;
+	display: flex;
+	justify-content: center;
 `;
 
 export const ConfirmButton = styled(Title)`
@@ -64,9 +64,20 @@ const DialogBannerName = styled(FoodLabel)`
     padding: 5px 40px;
 `;
 
-const FoodDialog = ({ openFood, setOpenFood }) => {
+const FoodDialog = ({ openFood, setOpenFood, setOrders, orders }) => {
 	const close = () => {
 		setOpenFood();
+	};
+
+	if (!openFood) return null
+
+	const order = {
+		name: openFood.name
+	};
+
+	const addToOrder = () => {
+		setOrders([ ...orders, order ]);
+		close();
 	};
 
 	return openFood ? (
@@ -78,7 +89,7 @@ const FoodDialog = ({ openFood, setOpenFood }) => {
 				</DialogBanner>
 				<DialogContent />
 				<DialogFooter>
-					<ConfirmButton>Add To Order</ConfirmButton>
+					<ConfirmButton onClick={addToOrder}>Add To Order</ConfirmButton>
 				</DialogFooter>
 			</Dialog>
 		</React.Fragment>
