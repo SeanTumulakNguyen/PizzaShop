@@ -4,6 +4,8 @@ import { FoodLabel } from '../menu/foodgrid';
 import { pizzaRed } from '../../styles/colors';
 import { Title } from '../../styles/title';
 import { formatPrice } from '../data/foodData';
+import { QuantityInput } from './quantityInput';
+import { useQuantity } from '../hooks/useQuantity';
 
 const Dialog = styled.div`
 	width: 500px;
@@ -20,6 +22,7 @@ const Dialog = styled.div`
 export const DialogContent = styled.div`
 	overflow: auto;
 	min-height: 100px;
+	padding: 0 40px;
 `;
 
 export const DialogFooter = styled.div`
@@ -65,7 +68,13 @@ const DialogBannerName = styled(FoodLabel)`
     padding: 5px 40px;
 `;
 
-const FoodDialog = ({ openFood, setOpenFood, setOrders, orders }) => {
+export const getPrice = (order) => {
+	return order.quantity * order.price;
+};
+
+export const FoodDialogContainer = ({ openFood, setOpenFood, setOrders, orders }) => {
+	const quantity = useQuantity(openFood & openFood.quantity);
+
 	const close = () => {
 		setOpenFood();
 	};
@@ -73,7 +82,8 @@ const FoodDialog = ({ openFood, setOpenFood, setOrders, orders }) => {
 	if (!openFood) return null;
 
 	const order = {
-		...openFood
+		...openFood,
+		quantity: quantity.value
 	};
 
 	const addToOrder = () => {
@@ -81,20 +91,25 @@ const FoodDialog = ({ openFood, setOpenFood, setOrders, orders }) => {
 		close();
 	};
 
-	return openFood ? (
+	return (
 		<React.Fragment>
 			<DialogShadow onClick={close} />
 			<Dialog>
 				<DialogBanner img={openFood.img}>
 					<DialogBannerName>{openFood.name}</DialogBannerName>
 				</DialogBanner>
-				<DialogContent />
+				<DialogContent>
+					<QuantityInput quantity={quantity} />
+				</DialogContent>
 				<DialogFooter>
-					<ConfirmButton onClick={addToOrder}>Add To Order: {formatPrice(openFood.price)}</ConfirmButton>
+					<ConfirmButton onClick={addToOrder}>Add To Order: {formatPrice(getPrice(order))}</ConfirmButton>
 				</DialogFooter>
 			</Dialog>
 		</React.Fragment>
-	) : null;
+	);
 };
 
-export default FoodDialog;
+export const FoodDialog = (props) => {
+	if (!props.openFood) return null;
+	return <FoodDialogContainer {...props} />;
+};
