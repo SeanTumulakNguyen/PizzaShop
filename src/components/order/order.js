@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ConfirmButton, DialogFooter, DialogContent } from '../foodDialog/foodDialog';
 import { formatPrice } from '../data/foodData';
-import { getPrice } from '../foodDialog/foodDialog'
+import { getPrice } from '../foodDialog/foodDialog';
 
 const OrderStyled = styled.div`
 	position: fixed;
@@ -35,6 +35,14 @@ const OrderItem = styled.div`
 `;
 
 const Order = ({ orders }) => {
+	const subtotal = orders.reduce((total, order) => {
+		return total + getPrice(order);
+	}, 0);
+
+	const tax = subtotal * 0.07;
+
+	const total = subtotal + tax;
+
 	return (
 		<OrderStyled>
 			{orders.length === 0 ? (
@@ -52,6 +60,23 @@ const Order = ({ orders }) => {
 							</OrderItem>
 						</OrderContainer>
 					))}
+					<OrderContainer>
+						<OrderItem>
+							<div />
+							<div>Subtotal</div>
+							<div>{formatPrice(subtotal)}</div>
+						</OrderItem>
+						<OrderItem>
+							<div />
+							<div>Tax</div>
+							<div>{formatPrice(tax)}</div>
+						</OrderItem>
+						<OrderItem>
+							<div />
+							<div>Total</div>
+							<div>{formatPrice(total)}</div>
+						</OrderItem>
+					</OrderContainer>
 				</OrderContent>
 			)}
 			<DialogFooter>
